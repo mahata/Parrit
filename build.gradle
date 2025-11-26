@@ -1,7 +1,7 @@
 plugins {
     id "java"
-    id "org.springframework.boot" version "2.4.4"
-    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "org.springframework.boot" version "2.7.18"
+    id "io.spring.dependency-management" version "1.0.15.RELEASE"
     id "org.flywaydb.flyway" version "6.3.1"
 }
 
@@ -27,25 +27,21 @@ dependencies {
 
     runtimeOnly "org.postgresql:postgresql"
 
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
 
-    def junitJupiterVersion = '5.8.0-M1'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
-    testImplementation "org.testcontainers:testcontainers:1.15.2"
-    testImplementation "org.testcontainers:junit-jupiter:1.15.2"
-    testImplementation "org.testcontainers:postgresql:1.15.2"
-
-    // Enable use of the JUnitPlatform Runner within the IDE
-    testImplementation("org.junit.platform:junit-platform-runner")
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.junit.jupiter:junit-jupiter-params"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testImplementation "org.testcontainers:testcontainers:1.19.3"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.3"
+    testImplementation "org.testcontainers:postgresql:1.19.3"
 }
 
 test {
@@ -56,8 +52,8 @@ test {
 }
 
 version "1.1.0"
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
+sourceCompatibility = 21
+targetCompatibility = 21
 
 // *** Database Tasks *** //
 
@@ -74,45 +70,6 @@ task migrate(type: org.flywaydb.gradle.task.FlywayMigrateTask) {
 
 defaultTasks "clean", "build"
 
-task jsTest(type: Exec) {
-    group = "Parrit"
-    description = "Runs the frontend javascript tests"
-
-    workingDir = "$project.projectDir/frontend"
-    commandLine = "./node_modules/.bin/jest"
-}
-test.dependsOn(jsTest)
-
-task jsLint(type: Exec) {
-    group = "Parrit"
-    description = "Checks the javascript code syntax"
-
-    workingDir = "$project.projectDir/frontend"
-    commandLine = "./node_modules/.bin/eslint"
-    args = ["--config", ".eslintrc.json", "."]
-}
-jsTest.dependsOn(jsLint)
-
-task jsBuild(type: Exec) {
-    group = "Parrit"
-    description = "Bundles the frontend javascript code"
-
-    workingDir = "$project.projectDir/frontend"
-    commandLine = "./node_modules/.bin/webpack"
-    args = ["--config", "webpack.config.js"]
-}
-processResources.dependsOn(jsBuild)
-
-task jsCompile(type: Exec) {
-    group = "Parrit"
-    description = "Compiles the frontend typescript"
-
-    workingDir = "$project.projectDir/frontend"
-    commandLine = "npm"
-    args = ["run", "build"]
-}
-jsBuild.dependsOn(jsCompile)
-
 task jsDependencies(type: Exec) {
     group = "Parrit"
     description = "Downloads dependencies for the frontend javascript code"
@@ -121,4 +78,48 @@ task jsDependencies(type: Exec) {
     commandLine = "npm"
     args = ["install"]
 }
-jsBuild.dependsOn(jsDependencies)
+
+task jsLint(type: Exec) {
+    group = "Parrit"
+    description = "Checks the javascript code syntax"
+
+    workingDir = "$project.projectDir/frontend"
+    commandLine = "./node_modules/.bin/eslint"
+    args = ["--config", ".eslintrc.json", "."]
+    environment "NODE_OPTIONS", "--openssl-legacy-provider"
+}
+jsLint.dependsOn(jsDependencies)
+
+task jsTest(type: Exec) {
+    group = "Parrit"
+    description = "Runs the frontend javascript tests"
+
+    workingDir = "$project.projectDir/frontend"
+    commandLine = "./node_modules/.bin/jest"
+    environment "NODE_OPTIONS", "--openssl-legacy-provider"
+}
+jsTest.dependsOn(jsLint)
+test.dependsOn(jsTest)
+
+task jsCompile(type: Exec) {
+    group = "Parrit"
+    description = "Compiles the frontend typescript"
+
+    workingDir = "$project.projectDir/frontend"
+    commandLine = "npm"
+    args = ["run", "build"]
+    environment "NODE_OPTIONS", "--openssl-legacy-provider"
+}
+jsCompile.dependsOn(jsDependencies)
+
+task jsBuild(type: Exec) {
+    group = "Parrit"
+    description = "Bundles the frontend javascript code"
+
+    workingDir = "$project.projectDir/frontend"
+    commandLine = "./node_modules/.bin/webpack"
+    args = ["--config", "webpack.config.js"]
+    environment "NODE_OPTIONS", "--openssl-legacy-provider"
+}
+jsBuild.dependsOn(jsCompile)
+processResources.dependsOn(jsBuild)
