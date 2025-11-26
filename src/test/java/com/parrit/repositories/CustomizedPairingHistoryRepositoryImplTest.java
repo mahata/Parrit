@@ -9,14 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import org.springframework.test.context.TestPropertySource;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -27,9 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @DataJpaTest
-@Testcontainers
 @AutoConfigureTestDatabase(replace = NONE)
-@ContextConfiguration(initializers = {CustomizedPairingHistoryRepositoryImplTest.Initializer.class})
+@TestPropertySource(properties = {
+    "spring.datasource.url=jdbc:tc:postgresql:16-alpine:///test-parrit",
+    "spring.datasource.username=test",
+    "spring.datasource.password=test",
+    "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver"
+})
 public class CustomizedPairingHistoryRepositoryImplTest {
 
     @Autowired
@@ -37,23 +34,6 @@ public class CustomizedPairingHistoryRepositoryImplTest {
 
     @Autowired
     PairingArrangementRepository pairingArrangementRepository;
-
-    @Container
-    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:12.6"))
-            .withDatabaseName("test-parrit")
-            .withPassword("test-parrit")
-            .withUsername("test-parrit")
-            .withExposedPorts(5432);
-
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword()
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 
     @Test
     void shouldReturnHistoryForProjectSearched_NotForOtherProjects() {
