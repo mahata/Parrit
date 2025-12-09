@@ -1,0 +1,10 @@
+services:
+  database:
+    image: postgres:18.1-alpine3.23
+    container_name: parrit-postgres
+    environment:
+      POSTGRES_USER: parrit
+      POSTGRES_PASSWORD: parrit
+      POSTGRES_DB: local_parrit
+    ports:
+      - "5435:5432"
