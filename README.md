@@ -1,7 +1,3 @@
-[![Codeship Status for Parrit/Parrit](https://app.codeship.com/projects/cf62bb07-9cfd-4217-8a94-564a4441f6c6/status?branch=master)](https://app.codeship.com/projects/424633)
-
-# 📣 UPDATE: The default hosted Parrit instance has changed addresses. We're now at https://parrit.io
-
 # Parrit
 
 A historical recommendation engine for daily pair rotation management, with an interactive visual aide of each pairing team.
@@ -34,4 +30,4 @@ As of 2025, `parrit.io` was taken over by someone, and the original Parrit team 
 1. Create postgres user with name `parrit` password `parrit`
 2. create new database called `local_parrit`
 3. migrate the database with `gradle migrate`
-4. Run application through `gradle bootRun`
+4. Run application through `./gradlew bootRun`
