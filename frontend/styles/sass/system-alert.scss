@@ -1,3 +1,6 @@
+@use "colors" as *;
+@use "fonts" as *;
+
 .system-alert {
   height: 45px;
   background-color: $yellow;

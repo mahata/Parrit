@@ -1,3 +1,6 @@
+@use "colors" as *;
+@use "fonts" as *;
+
 .text-link {
   position: relative;
   font: $Raleway-ExtraBold;

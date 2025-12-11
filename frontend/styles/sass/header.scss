@@ -1,3 +1,6 @@
+@use "colors" as *;
+@use "variables" as *;
+
 header {
    height: 80px;
    background-color: $duckEggBlue;
@@ -117,4 +120,3 @@ header {
     }
   }
 }
-

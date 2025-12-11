@@ -1,3 +1,7 @@
+@use "colors" as *;
+@use "fonts" as *;
+@use "variables" as *;
+
 .dashboard-container {
   background-color: $duckEggBlue;
 

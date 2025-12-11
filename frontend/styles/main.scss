@@ -1,25 +1,22 @@
-$desktopContentWidth: 875px;
-$mobileContentWidth: 375px;
+@use "./sass/colors";
+@use "./sass/fonts";
 
-@import "./sass/colors";
-@import "./sass/fonts";
+@use "./sass/layout";
+@use "./sass/inputs";
+@use "./sass/modal";
+@use "./sass/drag-layer";
 
-@import "./sass/layout";
-@import "./sass/inputs";
-@import "./sass/modal";
-@import "./sass/drag-layer";
+@use "./sass/system-alert";
+@use "./sass/header";
+@use "./sass/footer";
+@use "./sass/text-link";
 
-@import "./sass/system-alert";
-@import "./sass/header";
-@import "./sass/footer";
-@import "./sass/text-link";
-
-@import "./sass/dashboard";
-@import "./sass/project";
-@import "./sass/pairing-boards";
-@import "./sass/person";
-@import "./sass/role";
-@import "./sass/login";
-@import "./sass/error";
-@import "./sass/pairing-history";
-@import "./sass/pairing-history-record";
+@use "./sass/dashboard";
+@use "./sass/project";
+@use "./sass/pairing-boards";
+@use "./sass/person";
+@use "./sass/role";
+@use "./sass/login";
+@use "./sass/error";
+@use "./sass/pairing-history";
+@use "./sass/pairing-history-record";

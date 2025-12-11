@@ -1,3 +1,6 @@
+@use "colors" as *;
+@use "fonts" as *;
+
 .pairing-history-record-list {
   .pairing-history-record {
     display: grid;
